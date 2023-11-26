@@ -1,5 +1,5 @@
 # 42-cub3D
-My first RayCaster with miniLibX
+Mon premier RayCaster avec la minilibX
 
 ## Correction
 https://rphlr.github.io/42-Evals/

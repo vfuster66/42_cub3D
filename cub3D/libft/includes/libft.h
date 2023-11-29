@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: virginie <virginie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 09:55:17 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/11/27 22:30:02 by virginie         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:38:12 by vfuster-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 # include <limits.h>
 # include <ctype.h>
 # include <errno.h>
-# include "ft_printf.h"
-# include "get_next_line.h"
 
 typedef struct s_list
 {

@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: virginie <virginie@student.42.fr>          +#+  +:+       +#+         #
+#    By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 12:41:34 by virginie          #+#    #+#              #
-#    Updated: 2023/11/27 12:45:36 by virginie         ###   ########.fr        #
+#    Updated: 2023/11/29 09:45:02 by vfuster-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compilateur et options
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
-LDFLAGS = -lmlx -framework OpenGL -framework AppKit -lm
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+LDFLAGS = -lmlx -lm -lXext -lX11
 
 # Nom du programme
 NAME = cub3D
@@ -21,7 +21,7 @@ NAME = cub3D
 # Bibliothèques
 LIB_PATH = ./libft
 LIB_NAME = libft.a
-LIB_INC = -I$(LIB_PATH)
+LIB_INC = -I$(LIB_PATH)/includes
 LIB_LINK = -L$(LIB_PATH) -lft
 
 # MinilibX path (ajustez selon votre installation)

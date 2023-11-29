@@ -13,7 +13,7 @@
 # Compilateur et options
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
-LDFLAGS = -lmlx -lm
+LDFLAGS = -lmlx -lm -lXext -lX11
 
 # Nom du programme
 NAME = cub3D

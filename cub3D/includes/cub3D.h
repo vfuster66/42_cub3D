@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: virginie <virginie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 12:22:36 by virginie          #+#    #+#             */
-/*   Updated: 2023/11/27 22:28:13 by virginie         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:41:07 by vfuster-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 # include <stdbool.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <unistd.h>
+# include <ctype.h>
+# include "../libft/includes/libft.h"
+# include "../mlx_linux/mlx.h"
 
 # define MAX_WIDTH 640
 # define MAX_HEIGHT 480
@@ -39,6 +43,16 @@ typedef struct  s_map
     char    *east_texture_path;
 }               t_map;
 
+// Structure mlx
+typedef struct s_mlx
+{
+    void    *mlx_ptr;
+    void    *win_ptr;
+    int     win_width;
+    int     win_height;
+}               t_mlx;
+
+bool check_missing_textures(t_map *map_info);
 bool check_missing_characters(const char *map);
 bool check_duplicate_characters(const char *map);
 bool check_resolution(int width, int height);

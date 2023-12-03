@@ -261,7 +261,7 @@ int	handle_map_line(char *line, t_map *map_info,
 		if (!parse_map_line(line, map_info, *line_number))
 		{
 			printf
-				("Erreur de parsing à la ligne de carte : %s\n"
+				("Erreur de parsing à la ligne de carte : %s\n",
 				 line);
 			return (0);
 		}

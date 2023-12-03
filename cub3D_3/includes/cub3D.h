@@ -80,20 +80,33 @@ typedef struct s_data
 }				t_data;
 
 /*---------- FONCTIONS ----------*/
-// Parsing
+// Parsing Config
+int			validate_resolution(const char *resolution_str);
 int			validate_rgb(const char *rgb_str, int *rgb_arr);
 int			validate_texture_path(const char *path);
-int			parse_config_line(char *line, t_map *map_info);
-int			parse_config_file(const char *file_path, t_map *map_info);
-int			is_wall_line(const char *line);
-int			parse_map_line(char *line, t_map *map_info, int line_number);
-int			parse_map(const char *file_path, t_map *map_info);
-int			parse_file(const char *file_path, t_map *map_info);
+int			handle_texture_and_color(char *key, char *value, t_map *map_info);
+int			parse_config_line(char* line, t_map *map_info);
+int			read_and_split_lines(int fd, char **line, char **saveptr, int *config_completed);
+int			process_lines(int fd, t_map *map_info);
+int			parse_config_file(const char* file_path, t_map *map_info);
+// Parsing Map
+int			is_wall_line(const char* line);
+int			process_player_position(char *line, t_map *map_info, int line_number);
+int			parse_map_line(char* line, t_map *map_info, int line_number);
+ssize_t		read_file_to_buffer(int fd, char *buffer, size_t buffer_size);
+int			handle_map_line(char *line, t_map *map_info, int *start_reading_map, int *line_number);
+int			process_map_lines(char *buffer, t_map *map_info, int *start_reading_map, int *line_number);
+int			open_file_for_parsing(const char *file_path);
+int			parse_map(const char* file_path, t_map *map_info);
+int			parse_file(const char* file_path, t_map *map_info);
 /*-----------------------------------------------------------*/
 // Check
-int			validate_map(t_map *map_info);
 int			check_file_accessibility(const char *filename);
 int			check_arguments(int ac, char **av);
+int			is_valid_character(char c);
+int			validate_single_map_line(char *line, int line_number,
+				int height, int *player_start_count);
+int			validate_map(t_map *map_info);
 /*----------------------------------------------------------*/
 // Window
 void		set_image(char **av, t_mlx *mlx);
@@ -102,6 +115,12 @@ int			keyboard_actions(int key, t_data *data);
 void		set_window(t_data *data);
 /*----------------------------------------------------------*/
 // Free
+void		free_texture_paths(t_map *map_info);
+void		free_map_lines(t_map *map_info);
 void		free_map(t_map *map_info);
+/*----------------------------------------------------------*/
+// Principal
+int			initialize_mlx_and_window(t_mlx *mlx_info);
+void		cleanup(t_map *map_info, t_mlx *mlx_info);
 
 #endif

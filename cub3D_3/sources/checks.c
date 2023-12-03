@@ -51,25 +51,29 @@ int	check_arguments(int ac, char **av)
 	return (check_file_accessibility(av[1]));
 }
 
-int is_valid_character(char c)
+int	is_valid_character(char c)
 {
 	return (c == '1' || c == '0' || c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-int validate_map_line(char *line, int line_number, int height, int *player_start_count)
+int	validate_single_map_line(char *line, int i, int height, int *player_start_count)
 {
+	int	width;
 	int	j;
-	
+
 	if (line == NULL)
+	{
 		return (0);
+	}
+	width = strlen(line);
 	j = 0;
-	while (line[j] != '\0')
+	while (j < width)
 	{
 		if (!is_valid_character(line[j]))
 			return (0);
 		if (line[j] == 'N' || line[j] == 'S' || line[j] == 'E' || line[j] == 'W')
 			(*player_start_count)++;
-		if ((line_number == 0 || line_number == height - 1 || j == 0 || j == strlen(line) - 1) && line[j] != '1')
+		if ((i == 0 || i == height - 1 || j == 0 || j == width - 1) && line[j] != '1')
 			return (0);
 		j++;
 	}
@@ -78,16 +82,21 @@ int validate_map_line(char *line, int line_number, int height, int *player_start
 
 int	validate_map(t_map *map_info)
 {
-	int	i;
+	int	height;
 	int	player_start_count;
+	int	i;
+
 	if (map_info == NULL || map_info->map == NULL)
 		return (0);
-	i = 0;
+	height = map_info->height;
 	player_start_count = 0;
-	while (i < map_info->height)
+	i = 0;
+	while (i < height)
 	{
-		if (!validate_map_line(map_info->map[i], i, map_info->height, &player_start_count))
+		if (!validate_single_map_line(map_info->map[i], i, height, &player_start_count))
+		{
 			return (0);
+		}
 		i++;
 	}
 	if (player_start_count != 1)

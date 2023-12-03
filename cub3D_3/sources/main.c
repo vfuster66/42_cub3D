@@ -12,54 +12,7 @@
 
 #include "../includes/cub3D.h"
 
-void	free_texture_paths(t_map *map_info)
-{
-	if (map_info->north_texture_path != NULL)
-	{
-		free(map_info->north_texture_path);
-		map_info->north_texture_path = NULL;
-	}
-	if (map_info->south_texture_path != NULL)
-	{
-		free(map_info->south_texture_path);
-		map_info->south_texture_path = NULL;
-	}
-	if (map_info->west_texture_path != NULL)
-	{
-		free(map_info->west_texture_path);
-		map_info->west_texture_path = NULL;
-	}
-	if (map_info->east_texture_path != NULL)
-	{
-		free(map_info->east_texture_path);
-		map_info->east_texture_path = NULL;
-	}
-}
-
-void	free_map(t_map *map_info)
-{
-	int		i;
-
-	if (map_info == NULL)
-		return ;
-	free_texture_paths(map_info);
-	if (map_info->map != NULL)
-	{
-		i = 0;
-		while (i < map_info->height && map_info->map[i] != NULL)
-		{
-			free(map_info->map[i]);
-			map_info->map[i] = NULL;
-			i++;
-		}
-		free(map_info->map);
-		map_info->map = NULL;
-	}
-	// Si map_info est alloué dynamiquement, ajouter ceci :
-	// free(map_info);
-}
-
-int	init_mlx(t_mlx *mlx_info)
+int	initialize_mlx_and_window(t_mlx *mlx_info)
 {
 	mlx_info->mlx = mlx_init();
 	if (mlx_info->mlx == NULL)
@@ -78,39 +31,37 @@ int	init_mlx(t_mlx *mlx_info)
 	return (1);
 }
 
-int	process_config(char *file_path, t_map *map_info, t_data *data, t_mlx *mlx_info)
+void	cleanup(t_map *map_info, t_mlx *mlx_info)
 {
-	if (parse_file(file_path, map_info) == 0)
-	{
-		printf("Error parsing the map file.\n");
-		return 0;
-	}
-	else
-	{
-		data->mlx = mlx_info;
-		set_image(file_path, mlx_info);
-		set_window(data);
-		return 1;
-	}
+	free_map(map_info);
+	mlx_destroy_window(mlx_info->mlx, mlx_info->win);
+	mlx_destroy_display(mlx_info->mlx);
+	free(mlx_info->mlx);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	int		status;
-	t_map map_info = {0};
-	t_data data;
-	t_mlx mlx_info;
+	int	parse_status;
+
+	t_map	map_info = {0};
+	t_data	data;
+	t_mlx	mlx_info;
 
 	if (check_arguments(ac, av) != 0)
 		return (1);
-
-	if (!init_mlx(&mlx_info))
+	if (!initialize_mlx_and_window(&mlx_info))
 		return (1);
-
-	status = process_config(av[1], &map_info, &data, &mlx_info);
-	free_map(&map_info);
-	mlx_destroy_window(mlx_info.mlx, mlx_info.win);
-	mlx_destroy_display(mlx_info.mlx);
-	free(mlx_info.mlx);
-	return (status == 0);
+	parse_status = parse_file(av[1], &map_info);
+	if (parse_status == 0)
+	{
+		printf("Error parsing the map file.\n");
+	}
+	else
+	{
+		data.mlx = &mlx_info;
+		set_image(av, &mlx_info);
+		set_window(&data);
+	}
+	cleanup(&map_info, &mlx_info);
+	return (parse_status != 0);
 }

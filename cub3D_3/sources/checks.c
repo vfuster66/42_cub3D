@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   checks.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:18:51 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/01 11:58:07 by vfuster-         ###   ########.fr       */
+/*   Updated: 2023/12/04 08:27:12 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
+#include "../includes/color.h"
 
 /* VERIFICATIONS */
 int	check_file_accessibility(const char *filename)

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 09:02:58 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/01 12:04:26 by vfuster-         ###   ########.fr       */
+/*   Updated: 2023/12/04 08:27:28 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
+#include "../includes/color.h"
 
 void	free_texture_paths(t_map *map_info)
 {

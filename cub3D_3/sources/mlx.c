@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   mlx.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:19:34 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/11/30 16:21:20 by vfuster-         ###   ########.fr       */
+/*   Updated: 2023/12/04 08:27:38 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
+#include "../includes/color.h"
 
 /* MLX */
 void	set_image(char **av, t_mlx *mlx)

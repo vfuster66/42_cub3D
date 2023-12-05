@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:18:09 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/01 11:52:20 by vfuster-         ###   ########.fr       */
+/*   Updated: 2023/12/04 18:38:52 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
+#include "../includes/color.h"
 
 int	validate_resolution(const char *resolution_str)
 {
@@ -76,13 +77,29 @@ int	validate_texture_path(const char *path)
 int	handle_texture_and_color(char *key, char *value, t_map *map_info)
 {
 	if (strcmp(key, "WE") == 0 && validate_texture_path(value))
-		map_info->west_texture_path = strdup(value);
+	{
+		map_info->west_texture_path = malloc(sizeof(t_texture));
+		if (map_info->west_texture_path != NULL)
+			map_info->west_texture_path->path = strdup(value);
+	}
 	else if (strcmp(key, "NO") == 0 && validate_texture_path(value))
-		map_info->north_texture_path = strdup(value);
+	{
+		map_info->north_texture_path = malloc(sizeof(t_texture));
+		if (map_info->north_texture_path != NULL)
+			map_info->north_texture_path->path = strdup(value);
+	}
 	else if (strcmp(key, "SO") == 0 && validate_texture_path(value))
-		map_info->south_texture_path = strdup(value);
+	{
+		map_info->south_texture_path = malloc(sizeof(t_texture));
+		if (map_info->south_texture_path != NULL)
+			map_info->south_texture_path->path = strdup(value);
+	}
 	else if (strcmp(key, "EA") == 0 && validate_texture_path(value))
-		map_info->east_texture_path = strdup(value);
+	{
+		map_info->east_texture_path = malloc(sizeof(t_texture));
+		if (map_info->east_texture_path != NULL)
+			map_info->east_texture_path->path = strdup(value);
+	}
 	else if (strcmp(key, "F") == 0
 		&& validate_rgb(value, map_info->floor_color))
 	{
@@ -262,7 +279,7 @@ int	handle_map_line(char *line, t_map *map_info,
 		{
 			printf
 				("Erreur de parsing à la ligne de carte : %s\n",
-				 line);
+				line);
 			return (0);
 		}
 		(*line_number)++;
@@ -276,7 +293,7 @@ int	handle_map_line(char *line, t_map *map_info,
 			{
 				printf
 					("Erreur de parsing à la première ligne de la carte : %s\n",
-					 line);
+					line);
 				return (0);
 			}
 			(*line_number)++;

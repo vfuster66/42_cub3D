@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 09:16:25 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/01 11:59:23 by vfuster-         ###   ########.fr       */
+/*   Updated: 2023/12/04 18:30:26 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <math.h>
 # include "../libft/includes/libft.h"
 # include "../mlx_linux/mlx.h"
+# include "color.h"
 
 # define MAX_WIDTH 640
 # define MAX_HEIGHT 480
@@ -33,30 +34,45 @@
 # define LEFT 65361
 # define RIGHT 65363
 
+# define RESET "0xff0000"
+
+# define ERR_MLX_START "Could not start mlx"
+# define ERR_MLX_WIN "Could not create mlx window"
+# define ERR_MLX_IMG "Could not create mlx image"
+
 /*---------- STRUCTURES ----------*/
-// Map
-typedef struct s_map
+
+// Raycast
+typedef struct s_ray
 {
-	char	*north_texture_path;
-	char	*south_texture_path;
-	char	*west_texture_path;
-	char	*east_texture_path;
+	double	cameraX;
+	double	rayDirX;
+	double	rayDirY;
+	int		mapX;
+	int		mapY;
+	double	sideDistX;
+	double	sideDistY;
+	double	deltaDistX;
+	double	deltaDistY;
+	double	perpWallDist;
+	int		stepX;
+	int		stepY;
+	int		hit;
+	int		side;
+}				t_ray;
+
+// Texture
+typedef struct s_texture
+{
+	void	*img;
+	char	*path;
+	char	*addr;
 	int		width;
 	int		height;
-	char	**map;
-	int		start_x;
-	int		start_y;
-	int		player_x;
-	int		player_y;
-	int		player_direction;
-	bool	floor_color_set;
-	bool	ceiling_color_set;
-	int		ceiling_color[3];
-	int		floor_color[3];
-	bool	config_done;
-	char*	resolution_str;
-	int		map_height;
-}				t_map;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}				t_texture;
 
 // Window
 typedef struct s_mlx
@@ -73,10 +89,48 @@ typedef struct s_mlx
 	int		win_height;
 }				t_mlx;
 
+// Map
+typedef struct s_map
+{
+	t_texture	*north_texture_path;
+	t_texture	*south_texture_path;
+	t_texture	*west_texture_path;
+	t_texture	*east_texture_path;
+	t_mlx		*mlx_ref;
+	int			width;
+	int			height;
+	char		**map;
+	int			start_x;
+	int			start_y;
+	int			player_x;
+	int			player_y;
+	int			player_direction;
+	bool		floor_color_set;
+	bool		ceiling_color_set;
+	int			ceiling_color[3];
+	int			floor_color[3];
+	bool		config_done;
+	char*		resolution_str;
+	int			map_height;
+}				t_map;
+
+// Player
+typedef struct s_player
+{
+	double	posX;
+	double	posY;	
+	double	dirX;
+	double	dirY;
+	double	planeX; 
+	double	planeY;
+}				t_player;
+
 // Data
 typedef struct s_data
 {
-	t_mlx	*mlx;
+	t_mlx		*mlx;
+	t_map       *map;
+    t_player    *player;
 }				t_data;
 
 /*---------- FONCTIONS ----------*/
@@ -114,13 +168,44 @@ int			close_window(t_data *data);
 int			keyboard_actions(int key, t_data *data);
 void		set_window(t_data *data);
 /*----------------------------------------------------------*/
+// Init
+void		init_player(t_player *player);
+void		init_ray(t_ray *ray);
+void		init_img_clean(t_mlx *mlx);
+bool		init_texture(void *mlx, t_texture *texture, char *path);
+void		init_img(t_data *data, t_mlx *image, int width, int height);
+/*----------------------------------------------------------*/
+// Moves
+void		move_forward(t_player *player, double move_speed);
+void		move_backward(t_player *player, double move_speed);
+void		rotate_right(t_player *player, double rot_speed);
+void		rotate_left(t_player *player, double rot_speed);
+void		move_left(t_player *player, double move_speed);
+void		move_right(t_player *player, double move_speed);
+int			handle_input(int keycode, t_data *data);
+/*----------------------------------------------------------*/
+// Raycast
+void		init_step_and_side_dist(t_ray *ray, t_player *player);
+void		perform_dda(t_data *data, t_ray *ray);
+void		cast_ray(t_data *data, t_player *player, int x, t_ray *ray);
+/*----------------------------------------------------------*/
+// Clean
+void		clean_exit(t_mlx *mlx, t_map *map);
+void		cleanup(t_map *map_info, t_mlx *mlx_info);
+void		clean_textures(t_map *map);
+/*----------------------------------------------------------*/
 // Free
 void		free_texture_paths(t_map *map_info);
 void		free_map_lines(t_map *map_info);
 void		free_map(t_map *map_info);
 /*----------------------------------------------------------*/
+// Error
+int	err_msg(char *detail, char *str, int code);
+int	err_msg_val(int detail, char *str, int code);
+/*----------------------------------------------------------*/
 // Principal
 int			initialize_mlx_and_window(t_mlx *mlx_info);
-void		cleanup(t_map *map_info, t_mlx *mlx_info);
+bool		check_wall(t_map *map_info, int x, int y);
+void		update_game(t_data *data, t_player *player);
 
 #endif

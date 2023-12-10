@@ -6,43 +6,14 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:39:16 by parallels         #+#    #+#             */
-/*   Updated: 2023/12/08 20:32:53 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 14:24:08 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
 
-void find_player_start_position(t_map *map_info, t_player *player)
+void set_player_direction_and_plane(t_player *player, char direction)
 {
-    int y;
-    int x;
-    char    cell;
-    
-    y = 0;
-    while (y < map_info->height)
-    {
-        x = 0;
-        while (x < map_info->width)
-        {
-            cell = map_info->map[y][x];
-            if (cell == 'N' || cell == 'S' || cell == 'E' || cell == 'W')
-            {
-                player->posX = x + 0.5;
-                player->posY = y + 0.5;
-                map_info->player_direction = cell;
-                return ;
-            }
-            x++;
-        }
-        y++;
-    }
-}
-
-void init_player(t_player *player, t_map *map_info)
-{
-    find_player_start_position(map_info, player);
-    char direction = map_info->player_direction;
-
     if (direction == 'N')
     {
         player->dirX = 0.0; player->dirY = -1.0;
@@ -66,8 +37,29 @@ void init_player(t_player *player, t_map *map_info)
     else
     {
         printf("Erreur : Direction du joueur invalide ('%c').\n", direction);
-        return ;
+        exit(EXIT_FAILURE);
     }
+}
+
+void init_player(t_player *player, t_map *map_info)
+{
+    int i;
+    char direction;
+    
+    i = 0;
+    while (i < map_info->height)
+    {
+        if (!process_player_position(map_info->map[i], map_info, i))
+        {
+            printf("Erreur : Impossible de trouver ou de traiter la position du joueur dans la carte.\n");
+            exit(EXIT_FAILURE);
+        }
+        i++;
+    }
+    direction = map_info->player_direction;
+    player->posX = map_info->player_x + 0.5;
+    player->posY = map_info->player_y + 0.5;
+    set_player_direction_and_plane(player, direction);
 }
 
 void	init_ray(t_ray *ray)
@@ -96,28 +88,6 @@ void	init_img_clean(t_mlx *mlx)
 	mlx->line_length = 0;
 	mlx->endian = 0;
 }
-
-/*bool init_texture(void *mlx, t_texture *texture, char *path)
-{
-
-    texture->img = mlx_xpm_file_to_image(mlx, path, &texture->width, &texture->height);
-    
-    if (!texture->img)
-    {
-        printf("Failed to load texture from path: %s\n", path);
-        return (false);
-    }
-
-    texture->addr = mlx_get_data_addr(texture->img, &texture->bits_per_pixel, &texture->line_length, &texture->endian);
-
-    if (!texture->addr)
-    {
-        printf("Failed to retrieve texture data address\n");
-        return (false);
-    }
-
-    return (true);
-}*/
 
 void init_img(t_data *data, void *mlx, int width, int height)
 {

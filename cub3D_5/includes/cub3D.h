@@ -6,7 +6,7 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 09:16:25 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/08 20:36:52 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 15:49:21 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct s_ray
 	int			stepY;
 	int			hit;
 	int			side;
+	int			texX;
 }				t_ray;
 
 
@@ -213,7 +214,7 @@ t_texture 	*choose_wall_texture(t_data *data, t_ray *ray);
 void 		draw_wall_texture(t_data *data, t_ray *ray, int x, int wall_height);
 void		draw_map_2d(t_data *data);
 void 		draw_square(t_data *data, int x, int y, int size, int color);
-int 		get_wall_color(t_data *data, int x, int y);
+int			get_wall_color(t_texture *texture, int x, int y);
 
 /*----------------------------------------------------------*/
 // Clean

@@ -6,7 +6,7 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 09:02:58 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/08 20:33:03 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 15:03:09 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,27 +55,6 @@ void update_game(t_data *data, t_player *player)
     }
 }
 
-/*bool init_all_textures(t_mlx *mlx_info, t_map *map_info)
-{
-    if (map_info->north_texture_path && !init_texture(mlx_info->mlx, &map_info->north_texture, map_info->north_texture_path))
-    {
-        return (false);
-    }
-    if (map_info->south_texture_path && !init_texture(mlx_info->mlx, &map_info->south_texture, map_info->south_texture_path))
-    {
-        return (false);
-    }
-    if (map_info->east_texture_path && !init_texture(mlx_info->mlx, &map_info->east_texture, map_info->east_texture_path))
-    {
-        return (false);
-    }
-    if (map_info->west_texture_path && !init_texture(mlx_info->mlx, &map_info->west_texture, map_info->west_texture_path))
-    {
-        return (false);
-    }
-    return (true);
-}*/
-
 int game_loop(t_data *data)
 {
     update_game(data, data->player); 
@@ -84,7 +63,6 @@ int game_loop(t_data *data)
     return 0;
 }
 
-
 int main(int ac, char **av)
 {
     t_map    map_info = {0};
@@ -92,50 +70,33 @@ int main(int ac, char **av)
     t_mlx    mlx_info = {0};
     t_player player = {0};
 
-    printf("Starting program...\n");
-
     if (check_arguments(ac, av) != 0)
     {
         printf("Argument check failed.\n");
         return (1);
     }
-    printf("Arguments checked successfully.\n");
-
     data.mlx = &mlx_info;
     data.map = &map_info;
     data.player = &player;
-
-    printf("Data structures initialized.\n");
-
     if (parse_file(av[1], &map_info) != 0)
     {
         printf("Error parsing the map file.\n");
         return (1);
     }
-    printf("Map file parsed successfully.\n");
-
     if (validate_map(&map_info) != 0)
     {
         printf("Invalid map.\n");
         free_map(&map_info);
         return (1);
     }
-    printf("Map validated successfully.\n");
-
     if (!initialize_mlx_and_window(&mlx_info))
     {
         printf("Failed to initialize MLX and window\n");
         free_map(&map_info);
         return (1);
     }
-    printf("MLX and window initialized successfully.\n");
-
     init_img(&data, mlx_info.mlx, MAX_WIDTH, MAX_HEIGHT);
-    printf("Image initialized.\n");
-
     init_player(&player, &map_info);
-    printf("Player initialized.\n");
-
     if (!init_all_textures(&mlx_info, &map_info))
     {
         printf("Failed to initialize textures\n");
@@ -143,21 +104,12 @@ int main(int ac, char **av)
         clean_exit(&mlx_info, &map_info);
         return (1);
     }
-    printf("Textures initialized successfully.\n");
-
     set_window(&data);
-    printf("Window set.\n");
-
     mlx_loop_hook(data.mlx->mlx, game_loop, &data);
-    printf("Game loop hook set.\n");
-
+    mlx_key_hook(data.mlx->win, handle_input, &data);
     mlx_loop(data.mlx->mlx);
-    printf("Entering main loop.\n");
-
     free_map(&map_info);
     clean_exit(&mlx_info, &map_info);
-    printf("Exiting program.\n");
-
     return (0);
 }
 

@@ -6,13 +6,12 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:19:34 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/08 16:05:02 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 15:01:54 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
 
-/* MLX */
 int	close_window(t_data *data)
 {
 	mlx_destroy_image(data->mlx->mlx, data->img->img);
@@ -45,5 +44,3 @@ void set_window(t_data *data)
 
     mlx_hook(data->mlx->win, 17, 0L, close_window, data);
 }
-
-

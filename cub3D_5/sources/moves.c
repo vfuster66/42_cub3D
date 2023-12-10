@@ -6,13 +6,12 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 22:06:42 by parallels         #+#    #+#             */
-/*   Updated: 2023/12/06 20:24:23 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 14:14:11 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
 
-//mouve et press-key
 void	move_forward(t_player *player, double move_speed)
 {
 	player->posX += player->dirX * move_speed;
@@ -25,22 +24,28 @@ void	move_backward(t_player *player, double move_speed)
 	player->posY -= player->dirY * move_speed;
 }
 
-void	rotate_right(t_player *player, double rot_speed)
+void rotate_right(t_player *player, double rot_speed)
 {
-	double oldDirX = player->dirX;
+	double oldDirX;
+	double oldPlaneX;
+
+	oldDirX = player->dirX;
 	player->dirX = player->dirX * cos(-rot_speed) - player->dirY * sin(-rot_speed);
 	player->dirY = oldDirX * sin(-rot_speed) + player->dirY * cos(-rot_speed);
-	double oldPlaneX = player->planeX;
+	oldPlaneX = player->planeX;
 	player->planeX = player->planeX * cos(-rot_speed) - player->planeY * sin(-rot_speed);
 	player->planeY = oldPlaneX * sin(-rot_speed) + player->planeY * cos(-rot_speed);
 }
 
 void	rotate_left(t_player *player, double rot_speed)
 {
-	double oldDirX = player->dirX;
+	double oldDirX;
+	double oldPlaneX;
+
+	oldDirX = player->dirX;
 	player->dirX = player->dirX * cos(rot_speed) - player->dirY * sin(rot_speed);
 	player->dirY = oldDirX * sin(rot_speed) + player->dirY * cos(rot_speed);
-	double oldPlaneX = player->planeX;
+	oldPlaneX = player->planeX;
 	player->planeX = player->planeX * cos(rot_speed) - player->planeY * sin(rot_speed);
 	player->planeY = oldPlaneX * sin(rot_speed) + player->planeY * cos(rot_speed);
 }
@@ -68,6 +73,5 @@ int	handle_input(int keycode, t_data *data)
 	if (keycode == 'D') move_right(data->player, move_speed);
 	if (keycode == RIGHT) rotate_right(data->player, rot_speed);
 	if (keycode == LEFT) rotate_left(data->player, rot_speed);
-
 	return (0);
 }

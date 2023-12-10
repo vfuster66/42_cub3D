@@ -6,7 +6,7 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:18:09 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/08 15:53:36 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 14:38:06 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,70 +78,65 @@ int	validate_texture_path(const char *path)
 	return (1);
 }
 
-
-int handle_texture_and_color(char *key, char *value, t_map *map_info)
+int	handle_texture_path(char *key, char *value, t_map *map_info)
 {
-    int rgb_arr[3];
-    
-    if (strcmp(key, "WE") == 0 && validate_texture_path(value))
-    {
-        map_info->west_texture_path = strdup(value);
-        if (map_info->west_texture_path == NULL)
-        {
-            printf("Erreur d'allocation pour la texture Ouest\n");
-            return (0);
-        }
-    }
-    else if (strcmp(key, "NO") == 0 && validate_texture_path(value))
-    {
-        map_info->north_texture_path = strdup(value);
-        if (map_info->north_texture_path == NULL)
-        {
-            printf("Erreur d'allocation pour la texture Nord\n");
-            return (0);
-        }
-    }
-    else if (strcmp(key, "SO") == 0 && validate_texture_path(value))
-    {
-        map_info->south_texture_path = strdup(value);
-        if (map_info->south_texture_path == NULL)
-        {
-            printf("Erreur d'allocation pour la texture Sud\n");
-            return (0);
-        }
-    }
-    else if (strcmp(key, "EA") == 0 && validate_texture_path(value))
-    {
-        map_info->east_texture_path = strdup(value);
-        if (map_info->east_texture_path == NULL)
-        {
-            printf("Erreur d'allocation pour la texture Est\n");
-            return (0);
-        }
-    }
-    else if (strcmp(key, "F") == 0 && validate_rgb(value, rgb_arr))
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            map_info->floor_color[i] = rgb_arr[i];
-        }
-        map_info->floor_color_set = true;
-    }
-    else if (strcmp(key, "C") == 0 && validate_rgb(value, rgb_arr))
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            map_info->ceiling_color[i] = rgb_arr[i];
-        }
-        map_info->ceiling_color_set = true;
-    }
-    else
-    {
-        return (0);
-    }
-    return (1);
+	char	**texture_path;
+
+	texture_path = NULL;
+	if (strcmp(key, "WE") == 0)
+		texture_path = &map_info->west_texture_path;
+	else if (strcmp(key, "NO") == 0)
+		texture_path = &map_info->north_texture_path;
+	else if (strcmp(key, "SO") == 0)
+		texture_path = &map_info->south_texture_path;
+	else if (strcmp(key, "EA") == 0)
+		texture_path = &map_info->east_texture_path;
+	if (texture_path != NULL && validate_texture_path(value))
+	{
+		*texture_path = strdup(value);
+		if (*texture_path == NULL)
+		{
+			printf("Erreur d'allocation pour la texture %s\n", key);
+			return (0);
+		}
+		return (1);
+	}
+	return (0);
 }
 
+int	handle_color(char *key, char *value, t_map *map_info)
+{
+	int	rgb_arr[3];
+	int	i;
+
+	if ((strcmp(key, "F") == 0 || strcmp(key, "C") == 0) && validate_rgb(value, rgb_arr))
+	{
+		i = 0;
+		while (i < 3)
+		{
+			if (strcmp(key, "F") == 0)
+				map_info->floor_color[i] = rgb_arr[i];
+			else
+				map_info->ceiling_color[i] = rgb_arr[i];
+			i++;
+		}
+		if (strcmp(key, "F") == 0)
+			map_info->floor_color_set = true;
+		else
+			map_info->ceiling_color_set = true;
+		return (1);
+	}
+	return (0);
+}
+
+int	handle_texture_and_color(char *key, char *value, t_map *map_info)
+{
+	if (!handle_texture_path(key, value, map_info) && !handle_color(key, value, map_info))
+	{
+		return (0);
+	}
+	return (1);
+}
 
 int	parse_config_line(char* line, t_map *map_info)
 {
@@ -230,7 +225,6 @@ int	parse_config_file(const char* file_path, t_map *map_info)
 	return (result);
 }
 
-// Parsing map
 int	is_wall_line(const char* line)
 {
 	int	i;
@@ -261,8 +255,7 @@ int	process_player_position(char *line, t_map *map_info, int line_number)
 		{
 			if (map_info->player_direction != 0)
 			{
-				printf
-					("Erreur : Plusieurs positions de départ du joueur trouvées\n");
+				printf("Erreur : Plusieurs positions de départ du joueur trouvées\n");
 				return (0);
 			}
 			map_info->player_x = player_pos - line;
@@ -273,7 +266,7 @@ int	process_player_position(char *line, t_map *map_info, int line_number)
 		}
 		i++;
 	}
-	return (1);
+	return 1;
 }
 
 int	parse_map_line(char* line, t_map *map_info, int line_number)
@@ -392,17 +385,17 @@ int	parse_map(const char* file_path, t_map *map_info)
 		return (0);
 }
 
-int parse_file(const char* file_path, t_map *map_info)
+int	parse_file(const char* file_path, t_map *map_info)
 {
-    if (!parse_config_file(file_path, map_info))
-    {
-        printf("Erreur lors du parsing de la configuration\n");
-        return (1);
-    }
-    if (!parse_map(file_path, map_info))
-    {
-        printf("Erreur lors du parsing de la carte\n");
-        return (1);
-    }
-    return (0);
+	if (!parse_config_file(file_path, map_info))
+	{
+		printf("Erreur lors du parsing de la configuration\n");
+		return (1);
+	}
+	if (!parse_map(file_path, map_info))
+	{
+		printf("Erreur lors du parsing de la carte\n");
+		return (1);
+	}
+	return (0);
 }

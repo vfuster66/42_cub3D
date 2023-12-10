@@ -6,13 +6,12 @@
 /*   By: parallels <parallels@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:18:51 by vfuster-          #+#    #+#             */
-/*   Updated: 2023/12/06 20:24:56 by parallels        ###   ########.fr       */
+/*   Updated: 2023/12/10 14:15:08 by parallels        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3D.h"
 
-/* VERIFICATIONS */
 int	check_file_accessibility(const char *filename)
 {
 	int	fd;

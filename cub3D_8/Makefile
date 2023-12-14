@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+         #
+#    By: parallels <parallels@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 12:41:34 by virginie          #+#    #+#              #
-#    Updated: 2023/12/14 10:44:48 by vfuster-         ###   ########.fr        #
+#    Updated: 2023/12/14 14:43:03 by parallels        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ MLX_INC = -I$(MLX_PATH)
 MLX_LINK = -L$(MLX_PATH) -lmlx
 
 # Sources
-SRCS := $(wildcard sources/*.c)
+SRCS := $(wildcard sources/*.c sources/draw/*.c sources/free/*.c sources/init/*.c \
+		sources/mouv/*.c sources/parsing/*.c)
 
 # Dossier pour les fichiers objets
 OBJ_DIR = objects
@@ -81,6 +82,11 @@ fclean: clean
 	@echo "✅ Cub3D Fully Cleaned\n"
 
 re: fclean all
+
+-include $(DEPS)
+
+.PHONY: all clean fclean re bonus
+
 
 -include $(DEPS)
 

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ecullier <ecullier@student.42perpignan.    +#+  +:+       +#+         #
+#    By: vfuster- <vfuster-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 12:41:34 by virginie          #+#    #+#              #
-#    Updated: 2023/12/06 11:20:19 by ecullier         ###   ########.fr        #
+#    Updated: 2023/12/14 10:44:48 by vfuster-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 LDFLAGS = -lmlx -lm -lXext -lX11
+DEPFLAGS = -MMD -MP
 
 # Nom du programme
 NAME = cub3D
@@ -38,36 +39,49 @@ OBJ_DIR = objects
 
 # Chemin complet pour les fichiers objets
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
+DEPS = $(OBJS:.o=.d)
 
 # Règle générique pour la création des fichiers objets
 $(OBJ_DIR)/%.o: %.c
+	@echo 🔜
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(LIB_INC) $(MLX_INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DEPFLAGS) $(LIB_INC) $(MLX_INC) -c $< -o $@
+
 
 all: compile
 
 compile: $(OBJS)
-	@if ! [ -f $(NAME) ] || [ "$(OBJS)" -nt "$(NAME)" ]; then \
-		make -s -C $(LIB_PATH); \
-		make -s -C $(MLX_PATH); \
-		$(CC) $(CFLAGS) $(OBJS) $(LIB_INC) $(LIB_LINK) $(MLX_INC) $(MLX_LINK) $(LDFLAGS) -o $(NAME); \
-		echo "✅ Cub3D compiled\n"; \
+	@if [ ! -f $(NAME) ]; then \
+		#echo "Compiling $(NAME)..."; \
+		$(MAKE) $(NAME) | grep -E "Compiling cub3D|\✅ Cub3D compiled|warning|error" || true; \
 	else \
-		echo "✅ All is up-to-date"; \
+		UPDATED=$$(find $(OBJ_DIR) -newer $(NAME)); \
+		if [ -n "$$UPDATED" ]; then \
+			echo "Recompiling updated objects..."; \
+			$(MAKE) $(NAME) | grep -E "Compiling cub3D|\✅ Cub3D compiled|warning|error" || true; \
+		else \
+			echo "✅ All is up-to-date"; \
+		fi \
 	fi
 
+$(NAME): $(OBJS)
+	@(make -s -C $(LIB_PATH) 2>&1 && make -s -C $(MLX_PATH) 2>&1 && $(CC) $(CFLAGS) $(OBJS) $(LIB_INC) $(LIB_LINK) $(MLX_INC) $(MLX_LINK) $(LDFLAGS) -o $(NAME) 2>&1) | grep -vE "ar: creating|Entering|Leaving|configure \[info\]"
+	@echo "✅ Cub3D compiled\n"
+
+
+
 clean:
+	@$(MAKE) -s -C $(LIB_PATH) clean | grep -v "configure" || true
+	@$(MAKE) -s -C $(MLX_PATH) clean | grep -v "configure" || true
 	@$(RM) -r $(OBJ_DIR)
-	@make -s -C $(LIB_PATH) clean
-	@make -s -C $(MLX_PATH) clean
 	@echo "✅ Cub3D Cleaned\n"
 
 fclean: clean
 	@$(RM) $(NAME)
-	@make -s -C $(LIB_PATH) fclean
-	@make -s -C $(MLX_PATH) clean
-	@echo "✅ Cub3D Cleaned\n"
+	@echo "✅ Cub3D Fully Cleaned\n"
 
 re: fclean all
+
+-include $(DEPS)
 
 .PHONY: all clean fclean re bonus

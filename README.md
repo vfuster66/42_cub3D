@@ -1,6 +1,8 @@
 # 42-cub3D
 Mon premier RayCaster avec la minilibX
 
+![100](https://github.com/vfuster66/42-cub3D/assets/124174795/7d0cf9b8-7bbe-429f-adf3-672eb8a359c5)
+
 ## Correction
 - https://rphlr.github.io/42-Evals/
 

@@ -1,8 +1,7 @@
 # 42-cub3D
 Mon premier RayCaster avec la minilibX
 
-[![vfuster-'s 42 cub3d Score](https://badge42.coday.fr/api/v2/cltpx5zqv531101p4bte37ts1/project/3430812)](https://github.com/Coday-meric/badge42) 
-le 14/12/2023
+✅ Validé à 100% le 14/12/2023
 
 ## Correction
 - https://rphlr.github.io/42-Evals/
